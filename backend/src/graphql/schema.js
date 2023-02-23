@@ -8,7 +8,7 @@ export const schema = createSchema({
   typeDefs: /* GraphQL */ `
     type Query {
       getMovies: [Movie]
-      getUsers: [User]
+    #  getUsers: [User]
     }
 
     type Mutation {
