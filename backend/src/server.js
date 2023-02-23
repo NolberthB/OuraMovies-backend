@@ -1,25 +1,11 @@
-import { GraphQLServer } from 'graphql-yoga'
+import { createServer } from 'node:http'
+import { createYoga } from 'graphql-yoga'
+import { schema } from './graphql/schema.js'
 
-// resolvers
-import resolvers from './graphql/resolvers/index.js'
-import typeDefs from './graphql/schema.js'
+// Create a Yoga instance with a GraphQL schema.
+const yoga = createYoga({ schema })
 
-// import path and limitations using type:module this is a hijack solution
-/*
-import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-*/
-
-// create server whit graphql-yoga v1
-const server = new GraphQLServer({
-  // typeDefs
-  typeDefs,
-  // resolver
-  resolvers
-})
+// Pass it into a server to hook into request handlers.
+const server = createServer(yoga)
 
 export default server

@@ -1,6 +1,11 @@
+// import server to initialize it !!
 import server from './server.js'
+
+// import connections to the database MongoDB
 import './database.js'
 
-server.start({ port: 3000 }, ({ port }) => {
-  console.log('server is running on ' + port)
+// Start the server!]
+const PORT = 4000
+server.listen(PORT, () => {
+  console.info(`Server is running on http://localhost:${PORT}/graphql`)
 })
