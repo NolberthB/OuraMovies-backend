@@ -1,15 +1,70 @@
+import { createSchema } from 'graphql-yoga'
 
-const typeDefs = `
+// import models
+import Movie from '../models/Movie.js'
+// import User from '../models/User.js'
 
-    type Movies {
-        title: String!
-        overview: String
-   
-    }
-
+export const schema = createSchema({
+  typeDefs: /* GraphQL */ `
     type Query {
-        allMovies: [Movies]
+      getMovies: [Movie]
+      getUsers: [User]
     }
 
-`
-export default typeDefs
+    type Mutation {
+      createMovie( title:String overview:String) : Movie 
+      updateMovie( _id:ID title:String overview:String ) : Movie
+      removeMovie(_id:ID): [Movie]
+}
+    
+    type Movie {
+      _id: ID!
+      title: String
+      overview: String
+    }
+
+    # schema for users
+    #type User {
+    #  name: String!
+    #  password: String!
+    #  email: String!
+    #}
+  `,
+  resolvers: {
+    Query: {
+
+      // resolvers query's for Movies
+      async getMovies () {
+        const movie = await Movie.find()
+        return movie
+      }
+
+      /* resolver for Users
+      async getUsers () {
+        const user = await User.find()
+        return user
+      }
+      */
+    },
+
+    Mutation: {
+      // resolvers mutations for Movies
+      async createMovie (_, { title, overview }) {
+        const newMovie = { title, overview }
+        const movie = await Movie.create(newMovie)
+        return movie
+      },
+
+      async updateMovie (_, { _id, title, overview }) {
+        const movie = { title, overview }
+        return await Movie.findByIdAndUpdate(_id, movie, { new: true })
+      },
+
+      async removeMovie (_, { _id }) {
+        await Movie.findByIdAndDelete(_id)
+        return await Movie.find()
+      }
+
+    }
+  }
+})
